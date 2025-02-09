@@ -1,0 +1,56 @@
+-- Таблица Programs
+CREATE TABLE programs (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(255) NOT NULL,
+  cost DECIMAL(10, 2) NOT NULL,
+  type VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица Modules
+CREATE TABLE modules (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_deleted BOOLEAN DEFAULT FALSE
+);
+
+-- Таблица Courses
+CREATE TABLE courses (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_deleted BOOLEAN DEFAULT FALSE
+);
+
+-- Таблица Lessons
+CREATE TABLE lessons (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  name VARCHAR(255) NOT NULL,
+  content TEXT,
+  video_link VARCHAR(255),
+  position INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  course_id INT REFERENCES courses(id) ON DELETE CASCADE,
+  is_deleted BOOLEAN DEFAULT FALSE
+);
+
+-- Таблица для связи Programs и Modules (many-to-many)
+CREATE TABLE program_modules (
+  program_id INT REFERENCES programs(id) ON DELETE CASCADE,
+  module_id INT REFERENCES modules(id) ON DELETE CASCADE,
+  PRIMARY KEY (program_id, module_id)
+);
+
+-- Таблица для связи Modules и Courses (many-to-many)
+CREATE TABLE module_courses (
+  module_id INT REFERENCES modules(id) ON DELETE CASCADE,
+  course_id INT REFERENCES courses(id) ON DELETE CASCADE,
+  PRIMARY KEY (module_id, course_id)
+);

@@ -74,3 +74,47 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Таблица enrollments
+CREATE TABLE enrollments (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  program_id INT REFERENCES programs(id) ON DELETE CASCADE,
+  enrollment_status VARCHAR(50) NOT NULL CHECK (enrollment_status IN ('active', 'pending', 'cancelled', 'completed')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица payments
+CREATE TABLE payments (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  enrollment_id INT REFERENCES enrollments(id) ON DELETE CASCADE,
+  amount DECIMAL(10, 2) NOT NULL,
+  payment_status VARCHAR(50) NOT NULL CHECK (payment_status IN ('pending', 'paid', 'failed', 'refunded')),
+  payment_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица program_completions
+CREATE TABLE program_completions (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  program_id INT REFERENCES programs(id) ON DELETE CASCADE,
+  program_status VARCHAR(50) NOT NULL CHECK (program_status IN ('active', 'completed', 'pending', 'cancelled')),
+  program_start_date TIMESTAMP,
+  program_end_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица certificates
+CREATE TABLE certificates (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  program_id INT REFERENCES programs(id) ON DELETE CASCADE,
+  certificate_url VARCHAR(255) NOT NULL,
+  certificate_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

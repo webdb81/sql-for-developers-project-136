@@ -138,3 +138,24 @@ CREATE TABLE exercises (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Таблица discussions
+CREATE TABLE discussions (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
+  parent_id INT REFERENCES discussions(id) ON DELETE CASCADE,
+  discussion_content JSONB NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица blog
+CREATE TABLE blog (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  student_id INT REFERENCES users(id) ON DELETE CASCADE,
+  article_title VARCHAR(255) NOT NULL,
+  article_content TEXT NOT NULL,
+  article_status VARCHAR(50) NOT NULL CHECK (article_status IN ('created', 'in moderation', 'published', 'archived')),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

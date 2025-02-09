@@ -1,3 +1,20 @@
+DROP TABLE IF EXISTS programs;
+DROP TABLE IF EXISTS modules;
+DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS lessons;
+DROP TABLE IF EXISTS program_modules;
+DROP TABLE IF EXISTS module_courses;
+DROP TABLE IF EXISTS teaching_groups;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS enrollments;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS program_completions;
+DROP TABLE IF EXISTS certificates;
+DROP TABLE IF EXISTS quizzes;
+DROP TABLE IF EXISTS exercises;
+DROP TABLE IF EXISTS discussions;
+DROP TABLE IF EXISTS blog;
+
 -- Таблица Programs
 CREATE TABLE programs (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,

@@ -54,3 +54,23 @@ CREATE TABLE module_courses (
   course_id INT REFERENCES courses(id) ON DELETE CASCADE,
   PRIMARY KEY (module_id, course_id)
 );
+
+-- Таблица TeachingGroups
+CREATE TABLE teaching_groups (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  slug VARCHAR(255) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Таблица Users (one-to-one по полю teaching_group_id)
+CREATE TABLE users (
+  id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  role VARCHAR(50) NOT NULL CHECK (role IN ('student', 'teacher', 'admin')),
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  teaching_group_id INT REFERENCES teaching_groups(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

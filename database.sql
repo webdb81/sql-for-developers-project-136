@@ -54,7 +54,7 @@ CREATE TABLE lessons (
   name VARCHAR(255) NOT NULL,
   content TEXT,
   video_url VARCHAR(255),
-  position INT NOT NULL,
+  position INT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   course_id INT REFERENCES courses(id) ON DELETE SET NULL,

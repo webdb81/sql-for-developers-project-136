@@ -86,10 +86,10 @@ CREATE TABLE teaching_groups (
 -- Таблица Users (one-to-one по полю teaching_group_id)
 CREATE TABLE users (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  role VARCHAR(50) NOT NULL CHECK (role IN ('student', 'teacher', 'admin')),
+  role VARCHAR(50) NOT NULL CHECK (role IN ('Student', 'Teacher', 'Admin')),
   name VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
+  password_hash VARCHAR(255),
   teaching_group_id INT REFERENCES teaching_groups(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -110,7 +110,7 @@ CREATE TABLE enrollments (
 CREATE TABLE payments (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   enrollment_id INT REFERENCES enrollments(id) ON DELETE CASCADE,
-  amount DECIMAL(10, 2) NOT NULL,
+  amount DECIMAL(10, 2),
   status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'paid', 'failed', 'refunded')),
   paid_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -134,7 +134,7 @@ CREATE TABLE certificates (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   program_id INT REFERENCES programs(id) ON DELETE CASCADE,
-  url VARCHAR(255) NOT NULL,
+  url VARCHAR(255),
   issued_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -144,8 +144,8 @@ CREATE TABLE certificates (
 CREATE TABLE quizzes (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
-  name VARCHAR(255) NOT NULL,
-  content JSONB NOT NULL,
+  name VARCHAR(255),
+  content JSONB,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -154,8 +154,8 @@ CREATE TABLE quizzes (
 CREATE TABLE exercises (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
-  name VARCHAR(255) NOT NULL,
-  url VARCHAR(255) NOT NULL,
+  name VARCHAR(255),
+  url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -165,7 +165,7 @@ CREATE TABLE discussions (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  text JSONB NOT NULL,
+  text JSONB,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -175,7 +175,7 @@ CREATE TABLE blogs (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   name VARCHAR(255) NOT NULL,
-  content TEXT NOT NULL,
+  content TEXT,
   status VARCHAR(50) NOT NULL CHECK (status IN ('created', 'in moderation', 'published', 'archived')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

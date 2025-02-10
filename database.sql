@@ -19,8 +19,8 @@ DROP TABLE IF EXISTS blog;
 CREATE TABLE programs (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name VARCHAR(255) NOT NULL,
-  cost DECIMAL(10, 2) NOT NULL,
-  type VARCHAR(100) NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  program_type VARCHAR(100) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -32,7 +32,7 @@ CREATE TABLE modules (
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  is_deleted BOOLEAN DEFAULT FALSE
+  deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Таблица Courses
@@ -42,7 +42,7 @@ CREATE TABLE courses (
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  is_deleted BOOLEAN DEFAULT FALSE
+  deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Таблица Lessons
@@ -50,12 +50,12 @@ CREATE TABLE lessons (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   name VARCHAR(255) NOT NULL,
   content TEXT,
-  video_link VARCHAR(255),
+  video_url VARCHAR(255),
   position INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   course_id INT REFERENCES courses(id) ON DELETE CASCADE,
-  is_deleted BOOLEAN DEFAULT FALSE
+  deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Таблица для связи Programs и Modules (many-to-many)
@@ -84,12 +84,13 @@ CREATE TABLE teaching_groups (
 CREATE TABLE users (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   role VARCHAR(50) NOT NULL CHECK (role IN ('student', 'teacher', 'admin')),
-  username VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL UNIQUE,
   email VARCHAR(255) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   teaching_group_id INT REFERENCES teaching_groups(id) ON DELETE SET NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  deleted_at BOOLEAN DEFAULT FALSE
 );
 
 -- Таблица enrollments
@@ -97,7 +98,7 @@ CREATE TABLE enrollments (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   program_id INT REFERENCES programs(id) ON DELETE CASCADE,
-  enrollment_status VARCHAR(50) NOT NULL CHECK (enrollment_status IN ('active', 'pending', 'cancelled', 'completed')),
+  status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'pending', 'cancelled', 'completed')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -107,8 +108,8 @@ CREATE TABLE payments (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   enrollment_id INT REFERENCES enrollments(id) ON DELETE CASCADE,
   amount DECIMAL(10, 2) NOT NULL,
-  payment_status VARCHAR(50) NOT NULL CHECK (payment_status IN ('pending', 'paid', 'failed', 'refunded')),
-  payment_date TIMESTAMP,
+  status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'paid', 'failed', 'refunded')),
+  paid_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -118,9 +119,9 @@ CREATE TABLE program_completions (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   program_id INT REFERENCES programs(id) ON DELETE CASCADE,
-  program_status VARCHAR(50) NOT NULL CHECK (program_status IN ('active', 'completed', 'pending', 'cancelled')),
-  program_start_date TIMESTAMP,
-  program_end_date TIMESTAMP,
+  status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'completed', 'pending', 'cancelled')),
+  started_at TIMESTAMP,
+  completed_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -130,8 +131,8 @@ CREATE TABLE certificates (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
   program_id INT REFERENCES programs(id) ON DELETE CASCADE,
-  certificate_url VARCHAR(255) NOT NULL,
-  certificate_date TIMESTAMP,
+  url VARCHAR(255) NOT NULL,
+  issued_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -140,8 +141,8 @@ CREATE TABLE certificates (
 CREATE TABLE quizzes (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
-  quiz_name VARCHAR(255) NOT NULL,
-  quiz_content JSONB NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  content JSONB NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -150,8 +151,8 @@ CREATE TABLE quizzes (
 CREATE TABLE exercises (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
-  exercise_name VARCHAR(255) NOT NULL,
-  exercise_url VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  url VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -160,8 +161,8 @@ CREATE TABLE exercises (
 CREATE TABLE discussions (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
-  parent_id INT REFERENCES discussions(id) ON DELETE CASCADE,
-  discussion_content JSONB NOT NULL,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  text JSONB NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -169,10 +170,10 @@ CREATE TABLE discussions (
 -- Таблица blog
 CREATE TABLE blog (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  student_id INT REFERENCES users(id) ON DELETE CASCADE,
-  article_title VARCHAR(255) NOT NULL,
-  article_content TEXT NOT NULL,
-  article_status VARCHAR(50) NOT NULL CHECK (article_status IN ('created', 'in moderation', 'published', 'archived')),
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  name VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  status VARCHAR(50) NOT NULL CHECK (status IN ('created', 'in moderation', 'published', 'archived')),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -1,19 +1,22 @@
-DROP TABLE IF EXISTS programs;
-DROP TABLE IF EXISTS modules;
-DROP TABLE IF EXISTS courses;
-DROP TABLE IF EXISTS lessons;
-DROP TABLE IF EXISTS program_modules;
-DROP TABLE IF EXISTS module_courses;
-DROP TABLE IF EXISTS teaching_groups;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS enrollments;
-DROP TABLE IF EXISTS payments;
-DROP TABLE IF EXISTS program_completions;
-DROP TABLE IF EXISTS certificates;
-DROP TABLE IF EXISTS quizzes;
-DROP TABLE IF EXISTS exercises;
-DROP TABLE IF EXISTS discussions;
-DROP TABLE IF EXISTS blogs;
+DROP TABLE IF EXISTS
+  programs,
+  modules,
+  courses,
+  lessons,
+  program_modules,
+  course_modules,
+  teaching_groups,
+  users,
+  enrollments,
+  payments,
+  program_completions,
+  certificates,
+  quizzes,
+  exercises,
+  discussions,
+  blogs
+CASCADE;
+
 
 -- Таблица Programs
 CREATE TABLE programs (
@@ -65,10 +68,10 @@ CREATE TABLE program_modules (
   PRIMARY KEY (program_id, module_id)
 );
 
--- Таблица для связи Modules и Courses (many-to-many)
-CREATE TABLE module_courses (
-  module_id INT REFERENCES modules(id) ON DELETE CASCADE,
+-- Таблица для связи Courses и Modules (many-to-many)
+CREATE TABLE course_modules (
   course_id INT REFERENCES courses(id) ON DELETE CASCADE,
+  module_id INT REFERENCES modules(id) ON DELETE CASCADE,
   PRIMARY KEY (module_id, course_id)
 );
 
@@ -162,8 +165,6 @@ CREATE TABLE discussions (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   lesson_id INT REFERENCES lessons(id) ON DELETE CASCADE,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
-  course_id INT REFERENCES courses(id) ON DELETE CASCADE,
-  module_id INT REFERENCES modules(id) ON DELETE CASCADE,
   text JSONB NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

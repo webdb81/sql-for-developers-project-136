@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS certificates;
 DROP TABLE IF EXISTS quizzes;
 DROP TABLE IF EXISTS exercises;
 DROP TABLE IF EXISTS discussions;
-DROP TABLE IF EXISTS blog;
+DROP TABLE IF EXISTS blogs;
 
 -- Таблица Programs
 CREATE TABLE programs (

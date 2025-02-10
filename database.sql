@@ -35,7 +35,7 @@ CREATE TABLE modules (
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  deleted_at BOOLEAN DEFAULT FALSE
+  deleted_at TIMESTAMP
 );
 
 -- Таблица Courses
@@ -45,7 +45,7 @@ CREATE TABLE courses (
   description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  deleted_at BOOLEAN DEFAULT FALSE
+  deleted_at TIMESTAMP
 );
 
 -- Таблица Lessons
@@ -57,8 +57,8 @@ CREATE TABLE lessons (
   position INT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  course_id INT REFERENCES courses(id) ON DELETE CASCADE,
-  deleted_at BOOLEAN DEFAULT FALSE
+  course_id INT REFERENCES courses(id) ON DELETE SET NULL,
+  deleted_at TIMESTAMP
 );
 
 -- Таблица для связи Programs и Modules (many-to-many)

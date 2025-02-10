@@ -167,7 +167,7 @@ CREATE TABLE discussions (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Таблица blog
+-- Таблица blogs
 CREATE TABLE blogs (
   id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
